@@ -2,13 +2,11 @@
 #include "ap.h"
 #include "apcplx.h"
 
-
-using namespace std;
-
-
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+
+using namespace std;
 
 // Overloaded mathematical functions
 
@@ -106,7 +104,7 @@ apcomplex invroot (apcomplex u, unsigned n)
     apfloat one = 1, d = n;
     apfloat x, y;
     apcomplex z;
-    double r, i, m, a, dx, dy;
+    double r, i, m, a, dx = 0.0, dy = 0.0;
 
     if (!n) return 1;
 
@@ -135,7 +133,7 @@ apcomplex invroot (apcomplex u, unsigned n)
     // Calculate initial guess from u
     if (!u.im.sign () ||
         (u.re.sign () && (expdiff > Basedigits ||
-                          expdiff >= 0 && dx >= dy * sqrt (MAX_PRECISE_DOUBLE))))
+                          (expdiff >= 0 && dx >= dy * sqrt (MAX_PRECISE_DOUBLE)))))
     {
         // Re z >> Im z
         apcomplex t;
@@ -159,7 +157,8 @@ apcomplex invroot (apcomplex u, unsigned n)
         else
         {
             m = pow (-m, -1.0 / (double) n);
-            a = (y.sign () >= 0 ? -M_PI : M_PI) / (double) n;
+            const double pi = M_PI; //boost::math::constants::pi<double>();
+            a = (y.sign () >= 0 ? -pi : pi) / (double) n;
             r = m * cos (a);
             i = m * sin (a);
         }
@@ -173,7 +172,7 @@ apcomplex invroot (apcomplex u, unsigned n)
     }
     else if (!u.re.sign () ||
              (u.im.sign () && (expdiff < -Basedigits ||
-                               expdiff <= 0 && dy >= dx * sqrt (MAX_PRECISE_DOUBLE))))
+                               (expdiff <= 0 && dy >= dx * sqrt (MAX_PRECISE_DOUBLE)))))
     {
         // Im z >> Re z
         apcomplex t;
@@ -192,12 +191,14 @@ apcomplex invroot (apcomplex u, unsigned n)
         if ((m = ap2double (y.ap)) >= 0.0)
         {
             m = pow (m, -1.0 / (double) n);
-            a = -M_PI / (double) (2 * n);
+            const double pi = M_PI; //boost::math::constants::pi<double>();
+            a = -pi / (double) (2 * n);
         }
         else
         {
             m = pow (-m, -1.0 / (double) n);
-            a = M_PI / (double) (2 * n);
+            const double pi = M_PI; //boost::math::constants::pi<double>();
+            a = pi / (double) (2 * n);
         }
 
         r = m * cos (a);
@@ -266,7 +267,7 @@ apcomplex invroot (apcomplex u, unsigned n)
     // Check where the precising iteration should be done
     for (k = 0, maxprec = prec; maxprec < destprec; k++, maxprec <<= 1);
     for (f = k, minprec = prec; f; f--, minprec <<= 1)
-        if (minprec >= 2 * Basedigits && (minprec - 2 * Basedigits) << f >= destprec)
+        if (static_cast<int>(minprec) >= 2 * Basedigits && (minprec - 2 * Basedigits) << f >= destprec)
             break;
 
     // Newton's iteration
@@ -316,7 +317,7 @@ apcomplex agm (apcomplex a, apcomplex b)
         return apfloat (new apstruct);      // Zero
 
     // Precision must be at least 2 * Basedigits
-    if (destprec <= Basedigits)
+    if (static_cast<int>(destprec) <= Basedigits)
     {
         destprec = 2 * Basedigits;
         a.re.prec (max (a.re.prec (), destprec));
@@ -420,9 +421,9 @@ void checkimsign (apcomplex x, apcomplex *y, apfloat twopi)
 
     dx = ap2double (x.im.ap);
     dy = ap2double (y->im.ap);
-
-    if (M_PI - fabs (dx) <= 1.0 / sqrt (MAX_PRECISE_DOUBLE) &&
-        M_PI - fabs (dy) <= 1.0 / sqrt (MAX_PRECISE_DOUBLE) &&
+    const double pi = M_PI; //boost::math::constants::pi<double>();
+    if (pi - fabs (dx) <= 1.0 / sqrt (MAX_PRECISE_DOUBLE) &&
+        pi - fabs (dy) <= 1.0 / sqrt (MAX_PRECISE_DOUBLE) &&
         dx * dy < 0.0)
     {
         // Both imaginary parts are near +-pi and of opposite sign
@@ -518,6 +519,7 @@ apcomplex exp (apcomplex u)
     checklogconst (destprec);
 
     d = ap2double (u.im.ap);
+    const double pi =M_PI; // boost::math::constants::pi<double>();
 
     if (fabs (d) <= 1.0 / sqrt (MAX_PRECISE_DOUBLE))
     {
@@ -527,7 +529,7 @@ apcomplex exp (apcomplex u)
         y.prec (doubledigits);
         z = apcomplex (1, y);
     }
-    else if (M_PI - fabs (d) <= 1.0 / sqrt (MAX_PRECISE_DOUBLE))
+    else if (pi - fabs (d) <= 1.0 / sqrt (MAX_PRECISE_DOUBLE))
     {
         // exp(z + i*pi) = exp(z)*exp(i*pi) = -exp(z)
         // exp(z - i*pi) = exp(z)/exp(i*pi) = -exp(z)
@@ -582,7 +584,7 @@ apcomplex exp (apcomplex u)
     // Check where the precising iteration should be done
     for (k = 0, maxprec = prec; maxprec < destprec; k++, maxprec <<= 1);
     for (f = k, minprec = prec; f; f--, minprec <<= 1)
-        if (minprec >= 3 * Basedigits && (minprec - 3 * Basedigits) << f >= destprec)
+        if (static_cast<int>(minprec) >= 3 * Basedigits && (minprec - 3 * Basedigits) << f >= destprec)
             break;
 
     // Newton's iteration

@@ -1,9 +1,10 @@
 #include <cmath>
+#include <stdexcept>
+#include <sstream>
+
 #include "ap.h"
 
-
 using namespace std;
-
 
 // Round up to the nearest power of two or three times a power of two
 size_t rnd23up (size_t x)
@@ -649,7 +650,7 @@ apstruct *apmulmedium (apstruct *a, apstruct *b)
     size_t t, s, p, l, prec, size, ssize;
     apstruct *ap;
     modint *f, *src, *dest;
-    rawtype carry, tmpdest[USE_N2_MUL];
+    rawtype carry = 0, tmpdest[USE_N2_MUL];
     modint tmpf[USE_N2_MUL];
 
     assert (a);                 // Won't work on uninitialized apfloats
@@ -839,7 +840,7 @@ apstruct *apdivshort (apstruct *a, apstruct *b)
     {
         // Check for finite or infinite result sequence
         tmp1[0] = f;
-        for (t = 0; t < NBasefactors; t++)
+        for (t = 0; static_cast<int>(t) < NBasefactors; t++)
             while (bigdiv (tmp2, tmp1, Basefactors[t], 1) == 0) tmp1[0] = tmp2[0];
         if (tmp1[0] != 1)
         {
@@ -1098,7 +1099,7 @@ apstruct *apabsceil (apstruct *a)
     }
 
     // Check if the fractional part is nonzero
-    if (a->size > a->exp)
+    if (static_cast<long>(a->size) > a->exp)
         carry = 1;
     else
         carry = 0;
