@@ -22,7 +22,7 @@ rawtype Base = BASE;
 rawtype Basedigit = BASEDIGIT;
 int Basedigits = BASEDIGITS;
 rawtype Basefactors[16] = {BASEFACTORS[0], BASEFACTORS[1]};     // All prime factors of Base
-int NBasefactors = NBASEFACTORS;                                // Number of prime factors of Base
+unsigned int NBasefactors = NBASEFACTORS;                                // Number of prime factors of Base
 
 
 // For scratch filenames

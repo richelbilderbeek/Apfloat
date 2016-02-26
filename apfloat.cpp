@@ -5,8 +5,6 @@
 #include "ap.h"
 
 
-
-
 using namespace std;
 
 
@@ -46,7 +44,6 @@ const char Expchar[2] = {'e', 'E'};
 
 // Construct an apfloat from an integer
 apfloat::apfloat (int value, size_t prec, int location)
-  : ap(nullptr)
 {
     int sign;
     size_t t, size;
@@ -103,7 +100,6 @@ apfloat::apfloat (int value, size_t prec, int location)
 
 // Construct an apfloat from an unsigned integer
 apfloat::apfloat (unsigned value, size_t prec, int location)
-  : ap(nullptr)
 {
     int sign;
     size_t t, size;
@@ -155,7 +151,6 @@ apfloat::apfloat (unsigned value, size_t prec, int location)
 
 // Construct an apfloat from a long integer
 apfloat::apfloat (long value, size_t prec, int location)
-  : ap(nullptr)
 {
     int sign;
     size_t t, size;
@@ -177,8 +172,7 @@ apfloat::apfloat (long value, size_t prec, int location)
         return;
     }
 
-    //static_assert(Base <= Maxlong,"Thanks to the compiler");
-    //if (Base <= Maxlong)
+    if (1) //if (Base <= Maxlong)
     {
         for (size = 0; size < 3 && value > 0; size++)
         {
@@ -186,11 +180,11 @@ apfloat::apfloat (long value, size_t prec, int location)
             value /= (long) Base;
         }
     }
-    //else
-    //{
-    //    size = 1;                               // Nonzero
-    //    tmpdata[2] = (rawtype) value;
-    //}
+    else
+    {
+        size = 1;                               // Nonzero
+        tmpdata[2] = (rawtype) value;
+    }
 
     exp = size;
 
@@ -213,7 +207,6 @@ apfloat::apfloat (long value, size_t prec, int location)
 
 // Construct an apfloat from an unsigned long integer
 apfloat::apfloat (unsigned long value, size_t prec, int location)
-  : ap(nullptr)
 {
     int sign;
     size_t t, size;
@@ -230,8 +223,7 @@ apfloat::apfloat (unsigned long value, size_t prec, int location)
         return;
     }
 
-    //Always true, thanks compiler!
-    //if (Base <= Maxunsignedlong)
+    if (1) //if (Base <= Maxunsignedlong)
     {
         for (size = 0; size < 3 && value > 0; size++)
         {
@@ -239,11 +231,11 @@ apfloat::apfloat (unsigned long value, size_t prec, int location)
             value /= (unsigned long) Base;
         }
     }
-    //else
-    //{
-    //    size = 1;                               // Nonzero
-    //    tmpdata[2] = (rawtype) value;
-    //}
+    else
+    {
+        size = 1;                               // Nonzero
+        tmpdata[2] = (rawtype) value;
+    }
 
     exp = size;
 
@@ -266,7 +258,6 @@ apfloat::apfloat (unsigned long value, size_t prec, int location)
 
 // Construct an apfloat from a double
 apfloat::apfloat (double value, size_t prec, int location)
-  : ap(nullptr)
 {
     int sign;
     size_t t, size;
@@ -340,7 +331,6 @@ apfloat::apfloat (double value, size_t prec, int location)
 
 // Construct an apfloat from a character string
 apfloat::apfloat (char *valuestring, size_t prec, int location)
-  : ap(nullptr)
 {
     size_t t, r, l, e, d;
     int sign = 1, dot = 0;
@@ -486,8 +476,9 @@ apfloat::apfloat (char *valuestring, size_t prec, int location)
 }
 
 apfloat::apfloat (const apfloat &d)
-  : ap(d.ap)
 {
+    ap = d.ap;
+
     if (!ap) return;
 
     ap->nlinks++;
@@ -531,7 +522,7 @@ void apfloat::exp (long newexp)
 
     newexp /= Basedigits;
 
-    if (ap->exp == newexp) return;
+    if (static_cast<long>(ap->exp) == newexp) return;
 
     unique ();
 
@@ -639,6 +630,7 @@ apfloat &apfloat::operator-- ()
 
 // Post-increment operators by Adam Pawlowski
 
+//removed the unused variable d Lucas
 apfloat apfloat::operator++ (int)
 {
     apfloat tmp = *this;
@@ -646,7 +638,7 @@ apfloat apfloat::operator++ (int)
 
     return tmp;
 }
-
+//removed the unused variable d Lucas
 apfloat apfloat::operator-- (int)
 {
     apfloat tmp = *this;

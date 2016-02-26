@@ -39,7 +39,6 @@ extern size_t Maxblocksize;
 extern size_t Memorytreshold;
 extern size_t Blocksize;
 extern size_t NProcessors;
-
 extern int Basedigits;
 
 extern int fno;
@@ -54,7 +53,7 @@ extern int fno;
 extern rawtype Base;
 extern rawtype Basedigit;
 extern rawtype Basefactors[];
-extern int NBasefactors;
+unsigned extern int NBasefactors;
 
 extern rawtype primetable[];
 extern rawtype moduli[3];
@@ -87,9 +86,10 @@ extern int *ip[];
 
 
 // Truncate function may be a standard function or not
+
 extern "C"
 {
-    int truncate (const char *filename, long size) throw();
+    int truncate (const char *filename, long size);
 }
 
 

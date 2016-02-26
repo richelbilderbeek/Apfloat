@@ -48,7 +48,6 @@ public:
     // Constructors
     datastruct (size_t newsize = 0, modint *newdata = 0, int newlocation = DEFAULT, int fill = 1);
     datastruct (datastruct &d, size_t newsize = (size_t) DEFAULT, int newlocation = DEFAULT, size_t padsize = (size_t) DEFAULT);
-
     datastruct(const datastruct&) = delete;
     datastruct& operator=(const datastruct&) = delete;
 
@@ -94,35 +93,33 @@ public:
     apstruct (apstruct &d, size_t newsize = (size_t) DEFAULT, int newlocation = DEFAULT, size_t padsize = (size_t) DEFAULT);
 
     // Destructor
-    virtual ~apstruct ();
+    ~apstruct ();
 
     // Implementation
     int nlinks;
     int sign;
-    long exp;
+    long unsigned exp;
     size_t prec;
 };
 
 inline apstruct::apstruct (int newsign, long newexp, size_t newprec, size_t newsize, modint *newdata, int newlocation, int fill)
-  : datastruct (newsize, newdata, newlocation, fill),
-    nlinks(1),
-    sign(newsign),
-    exp(newexp),
-    prec(newprec)
+ : datastruct (newsize, newdata, newlocation, fill),
+   nlinks{1},
+   sign{newsign},
+   exp{static_cast<long unsigned>(newexp)},
+   prec{newprec}
 {
 
-    // Rest is created with datastruct constructor automatically
 }
 
 inline apstruct::apstruct (apstruct &d, size_t newsize, int newlocation, size_t padsize)
   : datastruct (d, newsize, newlocation, padsize),
-    nlinks(1),
-    sign(d.sign),
-    exp(d.exp),
-    prec(d.prec)
+    nlinks{1},
+    sign{d.sign},
+    exp{d.exp},
+    prec{d.prec}
 {
 
-    // Rest is copied with datastruct copy constructor automatically
 }
 
 inline apstruct::~apstruct ()
@@ -366,16 +363,15 @@ public:
 
 
 inline apfloat::apfloat ()
-  : ap(0)
+  : ap{0}
 {
 
 }
 
 
 inline apfloat::apfloat (apstruct *d)
-  : ap(d)
+  : ap{d}
 {
-
 }
 
 

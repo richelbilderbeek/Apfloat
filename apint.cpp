@@ -1,6 +1,7 @@
 #include "ap.h"
 #include "apint.h"
 
+
 using namespace std;
 
 
@@ -232,7 +233,7 @@ apint &apint::operator-- ()
     return *this;
 }
 
-apint apint::operator++(int)
+apint apint::operator++ (int)
 {
     apint tmp = *this;
     ++(*this);
@@ -240,7 +241,7 @@ apint apint::operator++(int)
     return tmp;
 }
 
-apint apint::operator--(int)
+apint apint::operator-- (int)
 {
     apint tmp = *this;
     --(*this);

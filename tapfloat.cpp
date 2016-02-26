@@ -3,16 +3,17 @@
 
 
 tapfloat::tapfloat (const tapfloat &d)
-  : ap1(d.ap1),
-    ap2(d.ap2),
-    ap3(d.ap3)
 {
-  if (ap1)
-      ap1->nlinks++;
-  if (ap2)
-      ap2->nlinks++;
-  if (ap3)
-      ap3->nlinks++;
+    ap1 = d.ap1;
+    ap2 = d.ap2;
+    ap3 = d.ap3;
+
+    if (ap1)
+        ap1->nlinks++;
+    if (ap2)
+        ap2->nlinks++;
+    if (ap3)
+        ap3->nlinks++;
 }
 
 tapfloat::~tapfloat ()

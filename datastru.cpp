@@ -1,6 +1,4 @@
 #include <cstdio>
-#include <sstream>
-
 #include "ap.h"
 
 
@@ -12,15 +10,8 @@ using namespace std;
 // Construct a datastruct from scratch: size, allocated data
 // Possibly fill the rest of it with zeros
 datastruct::datastruct (size_t newsize, modint *newdata, int newlocation, int fill)
-  : size(newsize),
-    location(0),
-    data(nullptr),
-    gotdata(false),
-    position(0),
-    blocksize(0),
-    fileno(0),
-    fs(nullptr)
 {
+    size = newsize;
 
     if (newlocation == DEFAULT)
         location = (size <= Memorytreshold ? MEMORY : DISK);
@@ -85,14 +76,6 @@ datastruct::datastruct (size_t newsize, modint *newdata, int newlocation, int fi
 // Construct a datastruct from another datastruct,
 // possibly with different size and/or location, padded with zeros to some size
 datastruct::datastruct (datastruct &d, size_t newsize, int newlocation, size_t padsize)
-  : size(0),
-    location(0),
-    data(nullptr),
-    gotdata(false),
-    position(0),
-    blocksize(0),
-    fileno(0),
-    fs(nullptr)
 {
     if (newsize == (size_t) DEFAULT)
         size = d.size;
@@ -203,17 +186,6 @@ datastruct::~datastruct ()
 // Allocate a buffer for reading or updating
 modint *datastruct::getdata (size_t getposition, size_t getsize)
 {
-    #ifndef NDEBUG
-    if (gotdata)
-    {
-      std::stringstream s;
-      s << "Error: "
-        << "Line: " << __LINE__
-        <<  ", file: " << __FILE__
-      ;
-      std::cerr << s.str();
-    }
-    #endif
     assert (!gotdata);
 
     gotdata = true;
@@ -225,17 +197,6 @@ modint *datastruct::getdata (size_t getposition, size_t getsize)
     }
     else
     {
-        #ifndef NDEBUG
-        if (data)
-        {
-          std::stringstream s;
-          s << "Error: "
-            << "Line: " << __LINE__
-            <<  ", file: " << __FILE__
-          ;
-          std::cerr << s.str();
-        }
-        #endif
         assert (!data);
         position = getposition;
         blocksize = getsize;
@@ -387,7 +348,7 @@ void datastruct::resize (size_t newsize)
         }
         else if (newsize < size)
         {
-            truncate (filename (fileno), sizeof (modint) * newsize);
+            truncate(filename (fileno), sizeof (modint) * newsize);
         }
     }
 
@@ -482,7 +443,7 @@ void datastruct::relocate (int newlocation, size_t newsize)
 // Set the data to be the data in the file, destroy previous content
 void datastruct::capture (const char *newfilename)
 {
-    //int i;
+    int i;
 
     assert (!gotdata);
 
@@ -497,10 +458,7 @@ void datastruct::capture (const char *newfilename)
 
     remove (filename (fileno));             // Move on top of file if it exists
 
-    #ifndef NDEBUG
-    const int i =
-    #endif
-    rename (newfilename, filename (fileno));
+    i = rename (newfilename, filename (fileno));
     assert (!i);
 
     fstream &fs = openstream ();
@@ -512,7 +470,7 @@ void datastruct::capture (const char *newfilename)
 // Move the datastruct to disk, rename the data file and clear the datastruct
 void datastruct::release (const char *newfilename)
 {
-    //int i;
+    int i;
 
     assert (!gotdata);
 
@@ -520,11 +478,7 @@ void datastruct::release (const char *newfilename)
 
     remove (newfilename);                   // Move on top of new filename if it exists
 
-    #ifndef NDEBUG
-    const int i =
-    #endif
-    rename (filename (fileno), newfilename);
-
+    i = rename (filename (fileno), newfilename);
     assert (!i);
 
     location = MEMORY;                      // File no longer belongs to this datastruct
